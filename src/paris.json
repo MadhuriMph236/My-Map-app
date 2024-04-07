@@ -1,0 +1,30 @@
+{
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {
+                "speedLimit": 30
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    2.3488,
+                    48.8534
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "speedLimit": 50
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    2.35,
+                    48.85
+                ]
+            }
+        }
+    ]
+}
