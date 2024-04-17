@@ -25,6 +25,32 @@
                     48.85
                 ]
             }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "speedLimit": 60
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    4.35,
+                    100.85
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "speedLimit": 80
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    6.35,
+                    80.85
+                ]
+            }
         }
     ]
 }

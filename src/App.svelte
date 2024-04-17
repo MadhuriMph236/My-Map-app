@@ -1,5 +1,5 @@
 <script>
-	import { onMount, afterUpdate } from "svelte";
+	import { onMount } from "svelte";
 	import L from "leaflet";
 	import data from "./paris.json";
 	let speedLimit = 50;
@@ -7,58 +7,18 @@
 	let geojsonLayer;
 	let selectedRoad = null;
 	let stats = {};
-	let chart;
-
+	let maxNumRoads = 10;
+	let maxSpeedLimit = 100;
 	onMount(() => {
-		const shapefile = require("shapefile");
+		//const shapefile = require("shapefile");
 		mymap = L.map("mapid").setView([48.8534, 2.3488], 13);
 		L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 			maxZoom: 19,
 		}).addTo(mymap);
-		shapefile
-			.open("./gis_osm_places_a_free_1.shp")
-			.then((source) =>
-				source.read().then(function log(result) {
-					debugger;
-					if (result.done) return;
-					console.log(result.value);
-					return source.read().then(log);
-				}),
-			)
-			.catch((error) => console.error(error.stack));
 		calculateStats();
 		updateMap();
 	});
 
-	// afterUpdate(() => {
-	// 	if (chart) {
-	// 		chart.destroy();
-	// 	}
-
-	// 	let ctx = document.getElementById("chart").getContext("2d");
-	// 	chart = new Chart(ctx, {
-	// 		type: "bar",
-	// 		data: {
-	// 			labels: Object.keys(stats.speedLimits),
-	// 			datasets: [
-	// 				{
-	// 					label: "Number of Roads",
-	// 					data: Object.values(stats.speedLimits),
-	// 					backgroundColor: "rgba(75, 192, 192, 0.2)",
-	// 					borderColor: "rgba(75, 192, 192, 1)",
-	// 					borderWidth: 1,
-	// 				},
-	// 			],
-	// 		},
-	// 		options: {
-	// 			scales: {
-	// 				y: {
-	// 					beginAtZero: true,
-	// 				},
-	// 			},
-	// 		},
-	// 	});
-	// });
 	function updateMap() {
 		// Remove the old layer if it exists
 		if (geojsonLayer) {
@@ -106,14 +66,16 @@
 	}
 </script>
 
+<!-- header -->
 <header class="header">
 	<img style="width:250px" src="/logo.png" alt="Logo" id="logo" />
 	<h1 id="username">User Name</h1>
 </header>
 
+<!-- Input to display Speed  -->
 <div class="test">
 	<div class="center-input">
-		<label for="speedLimit">Speed Limit:</label>
+		<label for="speedLimit">Speed Limit: </label>
 		<input
 			id="speedLimit"
 			type="number"
@@ -122,6 +84,7 @@
 		/>
 	</div>
 
+	<!-- Dashboard with Chart and cards -->
 	{#if stats}
 		<div class="dashboard">
 			<div class="card">
@@ -136,15 +99,40 @@
 				<h2>Maximum Speed Limit</h2>
 				<p>{stats?.maxSpeedLimit} km/h</p>
 			</div>
+
+			<div class="chart">
+				<div
+					title="Number of Roads: {stats?.numRoads}"
+					class="bar"
+					style="height: {(stats?.numRoads / maxNumRoads) * 100}%;"
+				></div>
+				<div
+					title="Number of Roads: {stats?.avgSpeedLimit}"
+					class="bar"
+					style="height: {(stats?.avgSpeedLimit / maxSpeedLimit) *
+						100}%;"
+				></div>
+				<div
+					title="Number of Roads: {stats?.maxSpeedLimit}"
+					class="bar"
+					style="height: {(stats?.maxSpeedLimit / maxSpeedLimit) *
+						100}%;"
+				></div>
+			</div>
 		</div>
 	{/if}
+	<!-- Map Display -->
 	<div id="mapid" style="height: 450px;"></div>
-
-	<canvas id="chart"></canvas>
 </div>
-<footer></footer>
+<footer class="footer">leakmited @2024</footer>
 
 <style>
+	.footer {
+		background-color: #333;
+		color: white;
+		text-align: center;
+		padding: 1rem;
+	}
 	.header {
 		display: flex;
 		justify-content: space-between;
@@ -152,6 +140,10 @@
 		padding: 1rem;
 		background-color: #333;
 		color: white;
+		border-bottom: 2px solid;
+		background-color: #333;
+		color: white;
+		margin-bottom: 12px;
 	}
 	.center-input {
 		display: flex;
@@ -175,8 +167,8 @@
 	}
 
 	label {
-		font-size: 18px;
-		color: #555;
+		font-size: 27px;
+		color: #fff;
 	}
 	.dashboard {
 		display: flex;
@@ -201,5 +193,23 @@
 	.card p {
 		font-size: 2em;
 		color: #666;
+	}
+	.chart {
+		display: flex;
+		justify-content: space-around;
+		box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+		align-items: flex-end;
+		height: 200px;
+		width: 30%;
+		padding: 1em;
+		margin: 1em;
+		background-color: #fff;
+		border: 1px solid #ccc;
+	}
+
+	.bar {
+		cursor: pointer;
+		width: 20px;
+		background-color: #6495ed;
 	}
 </style>
